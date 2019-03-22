@@ -14,8 +14,8 @@ export class SingUpComponent implements OnInit {
     email: null,
     password: null
   }
-  type : string =null;
-  msg : string =null;
+  type: string = null;
+  msg: string = null;
   constructor(private _route: ActivatedRoute,
     private _router: Router) { }
 
@@ -34,8 +34,14 @@ export class SingUpComponent implements OnInit {
       .then(userDate => {
         //Requesting User for email verification
         userDate.sendEmailVerification();
+        this.type = "success";
+        this.msg = `A verfication email as sent to ${email}"`;
+
         //  this will create in  Realtime Database not in Firestore
         //https://console.firebase.google.com/project/angularfirebase-pro/database/angularfirebase-pro/data
+
+        //Learn more here
+        //https://angular-templates.io/tutorials/about/firebase-authentication-with-angular
         return firebase.database().ref('users/' + userDate.uid).set({
           email: email,
           uid: userDate.uid,
@@ -46,11 +52,12 @@ export class SingUpComponent implements OnInit {
           firebase.auth().signOut();
         })
         console.log(userDate);
-        
+
       })
       .catch(err => {
         console.log(err);
-        
+        this.type = "error"
+        this.msg = err.message;
       })
   }
 }
