@@ -8,14 +8,16 @@ import { SingUpComponent } from './auth/sing-up/sing-up.component';
 import { LoginComponent } from './auth/login/login.component';
 import { HomeComponent } from './home/home.component';
 import { SuccessFullUserComponent } from './success-full-user/success-full-user.component';
+import { RouterGuardServiceService } from './auth/router-guard-service.service';
 const appRoutes: Routes = [
   {
     path: '',
-    component: HomeComponent,
+    component: HomeComponent
   },
   {
     path: 'success',
     component: SuccessFullUserComponent,
+    canActivate:[RouterGuardServiceService]
   },
   {
     path: 'login',
