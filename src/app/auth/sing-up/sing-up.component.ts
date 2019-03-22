@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from "@angular/forms"
 import { User } from "../../model/user.model";
-
+import { ActivatedRoute, Router } from '@angular/router';
 import * as firebase from "firebase";
-
 @Component({
   selector: 'app-sing-up',
   templateUrl: './sing-up.component.html',
@@ -15,7 +14,10 @@ export class SingUpComponent implements OnInit {
     email: null,
     password: null
   }
-  constructor() { }
+  type : string =null;
+  msg : string =null;
+  constructor(private _route: ActivatedRoute,
+    private _router: Router) { }
 
   ngOnInit() {
   }
@@ -25,13 +27,30 @@ export class SingUpComponent implements OnInit {
     const fullname = this.user.fullname;
     const email = this.user.email
     const password = this.user.password;
+
+
     console.log(fullname, email, password);
     firebase.auth().createUserWithEmailAndPassword(email, password)
       .then(userDate => {
+        //Requesting User for email verification
+        userDate.sendEmailVerification();
+        //  this will create in  Realtime Database not in Firestore
+        //https://console.firebase.google.com/project/angularfirebase-pro/database/angularfirebase-pro/data
+        return firebase.database().ref('users/' + userDate.uid).set({
+          email: email,
+          uid: userDate.uid,
+          registrationDate: new Date().toString(),
+          name: fullname
+        })
+        .then(onResolve => {
+          firebase.auth().signOut();
+        })
         console.log(userDate);
+        
       })
       .catch(err => {
         console.log(err);
+        
       })
   }
 }

@@ -19,7 +19,7 @@ LoggedIn :boolean = false;
       }
       else{
          this.LoggedIn = false;
-         firebase.auth().signOut();
+        //  firebase.auth().signOut();
       }
     })
 
