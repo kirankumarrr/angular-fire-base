@@ -9,7 +9,7 @@
 </div>
     <div class="container">
         <div class="row">
-            <div class="col-lg-4">
+            <div class="col-lg-8">
                 <form #f="ngForm" (ngSubmit)="saveUser(f)">
                     <div class="form-group">
                         <label for="fullName">FullName</label>
@@ -28,6 +28,14 @@
                         Submit
                     </button>
                 </form>
+                <br>
+                <button class="loginBtn loginBtn--facebook " >
+                  Login with Facebook
+                </button>
+
+                <button class="loginBtn loginBtn--google">
+                  Login with Google
+                </button>
             </div>
         </div>
     </div>
