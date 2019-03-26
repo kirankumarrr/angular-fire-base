@@ -20,13 +20,30 @@ export class LoginComponent implements OnInit {
     firebase.auth().signInWithEmailAndPassword(email,password)
     .then(userData =>{
       if(userData.emailVerified){
-        console.log(userData,"LoggedIN");
-        this._router.navigate(["/success",userData.uid]);
+        console.log("nextr");
+        this._router.navigate(["/success"]);
        
       }else{
-        firebase.auth().signOut();
+        
         this.type ="error";
-        this.msg ="Email not verified yet";
+        this.msg ="Wrong User Credentials";
+      }
+    })
+    .catch(userData =>{
+       this.type ="error";
+        this.msg ="Wrong User Credentials";
+    })
+  }
+
+  fblogin() {
+    const provider = new firebase.auth.FacebookAuthProvider();
+    firebase.auth().signInWithPopup(provider).then(result =>{
+      if(result.user.emailVerified){
+        console.log("nextr");
+        this._router.navigate(["/success",result.user.uid]);
+      }else{
+        this.type ="error";
+        this.msg ="Email Verification Pending";
       }
     })
     .catch(userData =>{
