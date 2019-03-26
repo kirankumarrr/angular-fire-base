@@ -21,15 +21,16 @@ export class LoginComponent implements OnInit {
     .then(userData =>{
       if(userData.emailVerified){
         console.log("nextr");
-        this._router.navigate(["/success"]);
-       
+        this.SetUID(userData.uid);
+        this._router.navigate(["/success",userData.uid]);
       }else{
-        
+        this.ClearUID();
         this.type ="error";
-        this.msg ="Wrong User Credentials";
+        this.msg ="Email Verification Pending!!!";
       }
     })
     .catch(userData =>{
+      this.ClearUID();
        this.type ="error";
         this.msg ="Wrong User Credentials";
     })
@@ -40,15 +41,44 @@ export class LoginComponent implements OnInit {
     firebase.auth().signInWithPopup(provider).then(result =>{
       if(result.user.emailVerified){
         console.log("nextr");
+        this.SetUID(result.user.uid);
         this._router.navigate(["/success",result.user.uid]);
       }else{
+        this.type ="error";
+        this.msg ="Email Verification Pending!!!";
+      }
+    })
+    .catch(userData =>{
+      this.ClearUID();
+       this.type ="error";
+        this.msg ="Wrong User Credentials";
+    })
+  }
+
+  ggllogin(){
+    var provider = new firebase.auth.GoogleAuthProvider();
+    firebase.auth().signInWithPopup(provider).then(function(result) {
+      debugger;
+      if(result.user.emailVerified){
+        console.log("nextr");
+        this.SetUID(result.user.uid);
+        this._router.navigate(["/success",result.user.uid]);
+      }else{
+        this.ClearUID();
         this.type ="error";
         this.msg ="Email Verification Pending";
       }
     })
     .catch(userData =>{
+      this.ClearUID();
        this.type ="error";
         this.msg ="Wrong User Credentials";
     })
+  }
+  SetUID(uid){
+    localStorage.setItem("userUID",uid);
+  }
+  ClearUID(){
+    localStorage.removeItem("userUID");
   }
 }
