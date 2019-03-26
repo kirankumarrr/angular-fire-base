@@ -15,7 +15,7 @@ const appRoutes: Routes = [
     component: HomeComponent
   },
   {
-    path: 'success',
+    path: 'success/:id',
     component: SuccessFullUserComponent,
     canActivate:[RouterGuardServiceService]
   },

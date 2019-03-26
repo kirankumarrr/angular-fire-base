@@ -27,37 +27,22 @@ export class SingUpComponent implements OnInit {
     const fullname = this.user.fullname;
     const email = this.user.email
     const password = this.user.password;
-
-
     console.log(fullname, email, password);
+
+
     firebase.auth().createUserWithEmailAndPassword(email, password)
-      .then(userDate => {
-        //Requesting User for email verification
+    .then(userDate => {
         userDate.sendEmailVerification();
-        this.type = "success";
-        this.msg = `A verfication email as sent to ${email}"`;
-
-        //  this will create in  Realtime Database not in Firestore
-        //https://console.firebase.google.com/project/angularfirebase-pro/database/angularfirebase-pro/data
-
-        //Learn more here
-        //https://angular-templates.io/tutorials/about/firebase-authentication-with-angular
-        return firebase.database().ref('users/' + userDate.uid).set({
-          email: email,
-          uid: userDate.uid,
-          registrationDate: new Date().toString(),
-          name: fullname
-        })
-        .then(onResolve => {
-          firebase.auth().signOut();
-        })
-        console.log(userDate);
-
+          return firebase.database().ref('users/' + userDate.uid).set({
+              email: email,
+              uid: userDate.uid,
+              registrationDate: new Date().toString(),
+              name: fullname
+            })
+        // console.log(userDate);
       })
       .catch(err => {
         console.log(err);
-        this.type = "error"
-        this.msg = err.message;
       })
   }
 }

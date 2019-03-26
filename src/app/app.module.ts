@@ -11,10 +11,11 @@ import { AppRoutingModule } from "./app-routing-module";
 import { SuccessFullUserComponent } from './success-full-user/success-full-user.component';
 import { RouterGuardServiceService } from './auth/router-guard-service.service';
 import { NotificationComponent } from './notification/notification.component';
+import {FireService } from "./shared/fire.service";
 @NgModule({
   imports: [BrowserModule, FormsModule, AppRoutingModule],
   declarations: [AppComponent, HeaderComponent, SingUpComponent, LoginComponent, HomeComponent, SuccessFullUserComponent, NotificationComponent],
-  providers: [RouterGuardServiceService],
+  providers: [RouterGuardServiceService,FireService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -13,7 +13,6 @@ export class RouterGuardServiceService implements CanActivate {
     }
     else {
       return false;
-      
     }
   }
   constructor() { }

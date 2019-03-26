@@ -15,20 +15,18 @@ export class LoginComponent implements OnInit {
   ngOnInit() {
   }
   LoginUser(form : NgForm){
-    debugger;
     const email = form.value.email
     const password = form.value.password; 
     firebase.auth().signInWithEmailAndPassword(email,password)
     .then(userData =>{
       if(userData.emailVerified){
-        console.log("nextr");
-        
-        this._router.navigate(["/success"]);
+        console.log(userData,"LoggedIN");
+        this._router.navigate(["/success",userData.uid]);
        
       }else{
         firebase.auth().signOut();
         this.type ="error";
-        this.msg ="Wrong User Credentials";
+        this.msg ="Email not verified yet";
       }
     })
     .catch(userData =>{
