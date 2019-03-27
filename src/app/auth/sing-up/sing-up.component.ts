@@ -14,6 +14,10 @@ export class SingUpComponent implements OnInit {
     email: null,
     password: null
   }
+  fullname1 :string;
+  email1:any;
+  password1 :string;
+
   type: string = null;
   msg: string = null;
   constructor(private _route: ActivatedRoute,
@@ -66,10 +70,35 @@ export class SingUpComponent implements OnInit {
       
       // ...
     }).catch(function (error) {
-      //remove this later.
       firebase.auth().signOut();
       // ...
     });
   }
 //  https://firebase.google.com/docs/auth/web/facebook-login#before_you_begin
+
+  ggllogin(){
+    var provider = new firebase.auth.GoogleAuthProvider();
+    firebase.auth().signInWithPopup(provider).then(function(result) {
+      // This gives you a Google Access Token. You can use it to access the Google API.
+      var token = result.credential.accessToken;
+      // The signed-in user info.
+      var userInfo = result.additionalUserInfo;
+      const fullname = userInfo.fullname;
+      const email = userInfo.email
+      debugger;
+      return firebase.database().ref('users/' + result.user.uid).set({
+        email: email,
+        uid: result.user.uid,
+        registrationDate: new Date().toString(),
+        name: fullname,
+      })
+      .then(()=>{
+        firebase.auth().signOut();
+      })
+      // ...
+    }).catch(function(error) {
+      console.log(error);
+      // ...
+    });
+  }
 }
