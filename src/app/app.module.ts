@@ -13,10 +13,14 @@ import { RouterGuardServiceService } from './auth/router-guard-service.service';
 import { NotificationComponent } from './notification/notification.component';
 import {FireService } from "./shared/fire.service";
 import { StorageService } from './header/storage.service';
+import { LoaderService } from './loader/loader.service';
+import { FbLoginService } from './shared/fb.login.service';
+import { LoaderComponent } from './loader/loader/loader.component';
 @NgModule({
   imports: [BrowserModule, FormsModule, AppRoutingModule],
-  declarations: [AppComponent, HeaderComponent, SingUpComponent, LoginComponent, HomeComponent, SuccessFullUserComponent, NotificationComponent],
-  providers: [RouterGuardServiceService,FireService, StorageService],
+  declarations: [AppComponent, HeaderComponent, SingUpComponent, LoginComponent, HomeComponent, SuccessFullUserComponent, NotificationComponent, LoaderComponent],
+  providers: [RouterGuardServiceService,FireService, StorageService,  LoaderService,FbLoginService,
+    LoaderService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
