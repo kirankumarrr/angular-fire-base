@@ -1,0 +1,9 @@
+.loader-section {
+  position: absolute;
+  margin: 0 auto;
+  top: 50%;
+  left: 49.5%;
+}
+.loader-circle {
+  font-size: 100px;
+}

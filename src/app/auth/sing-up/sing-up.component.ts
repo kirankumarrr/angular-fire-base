@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { NgForm } from "@angular/forms"
-import { User } from "../../model/user.model";
+import { NgForm } from '@angular/forms';
+import { User } from '../../model/user.model';
 import { ActivatedRoute, Router } from '@angular/router';
-import * as firebase from "firebase";
+import * as firebase from 'firebase';
 @Component({
   selector: 'app-sing-up',
-  templateUrl: './sing-up.component.html',  
+  templateUrl: './sing-up.component.html',
   styleUrls: ['./sing-up.component.css']
 })
 export class SingUpComponent implements OnInit {
@@ -13,92 +13,99 @@ export class SingUpComponent implements OnInit {
     fullname: null,
     email: null,
     password: null
-  }
-  fullname1 :string;
-  email1:any;
-  password1 :string;
-
+  };
+  emailName: string;
+  username: string;
   type: string = null;
   msg: string = null;
-  constructor(private _route: ActivatedRoute,
-    private _router: Router) { }
+  constructor(private _route: ActivatedRoute, private _router: Router) {}
 
   ngOnInit() {
+    firebase.auth().onAuthStateChanged(function(result) {
+      // console.log(result);
+      if (result) {
+        var name;
+        if (localStorage.getItem('fullname')) {
+          name = localStorage.getItem('fullname');
+          localStorage.removeItem('fullname');
+        } else {
+          name = result.displayName;
+        }
+        var email = result.email;
+        var uid = result.uid;
+        firebase
+          .database()
+          .ref('users/' + uid)
+          .set({
+            email: email,
+            uid: uid,
+            registrationDate: new Date().toString(),
+            name: name
+          });
+      }
+    });
   }
   saveUser(userform: NgForm) {
-    console.log(userform);
-    console.log(this.user);
-    const fullname = this.user.fullname;
-    const email = this.user.email
-    const password = this.user.password;
+    const fullname = userform.value.fullname;
+    this.emailName = userform.value.fullname;
+    const email = userform.value.email;
+    const password = userform.value.password;
     console.log(fullname, email, password);
-
-
-    firebase.auth().createUserWithEmailAndPassword(email, password)
+    localStorage.setItem('fullname', fullname);
+    firebase
+      .auth()
+      .createUserWithEmailAndPassword(email, password)
       .then(userDate => {
+        // console.log(userDate);
         userDate.sendEmailVerification();
-        return firebase.database().ref('users/' + userDate.uid).set({
-          email: email,
-          uid: userDate.uid,
-          registrationDate: new Date().toString(),
-          name: fullname
-        })
-        console.log(userDate);
+        return firebase
+          .database()
+          .ref('users/' + userDate.uid)
+          .set({
+            email: email,
+            uid: userDate.uid,
+            registrationDate: new Date().toString(),
+            name: fullname
+          });
       })
       .catch(err => {
-        console.log(err);
-      })
+        // console.log(err);
+      });
   }
+  //facebook
   fblogin() {
     const provider = new firebase.auth.FacebookAuthProvider();
-    firebase.auth().signInWithPopup(provider).then(function (result) {
-      console.log(result);
-      result.user.sendEmailVerification();
-      // This gives you a Facebook Access Token. You can use it to access the Facebook API.
-      var token = result.credential.accessToken;
-      // The signed-in user info.
-      var userInfo = result.additionalUserInfo;
-      return firebase.database().ref('users/' + result.user.uid).set({
-        email: userInfo.email,
-        uid: result.user.uid,
-        registrationDate: new Date().toString(),
-        name: userInfo.name,
-      })
-      .then(()=>{
+    firebase
+      .auth()
+      .signInWithPopup(provider)
+      .then(function(result) {
+        // console.log(result);
+        result.user.sendEmailVerification();
         firebase.auth().signOut();
+        // ...
       })
-      
-      // ...
-    }).catch(function (error) {
-      firebase.auth().signOut();
-      // ...
-    });
+      .catch(function(error) {
+        // console.log(error);
+        localStorage.removeItem('userUID');
+        this.type = 'error';
+        this.msg = 'Wrong User Credentials';
+      });
   }
-//  https://firebase.google.com/docs/auth/web/facebook-login#before_you_begin
-
-  ggllogin(){
+  //  https://firebase.google.com/docs/auth/web/facebook-login#before_you_begin
+  ggllogin() {
     var provider = new firebase.auth.GoogleAuthProvider();
-    firebase.auth().signInWithPopup(provider).then(function(result) {
-      // This gives you a Google Access Token. You can use it to access the Google API.
-      var token = result.credential.accessToken;
-      // The signed-in user info.
-      var userInfo = result.additionalUserInfo;
-      const fullname = userInfo.fullname;
-      const email = userInfo.email
-      debugger;
-      return firebase.database().ref('users/' + result.user.uid).set({
-        email: email,
-        uid: result.user.uid,
-        registrationDate: new Date().toString(),
-        name: fullname,
-      })
-      .then(()=>{
+    firebase
+      .auth()
+      .signInWithPopup(provider)
+      .then(function(result) {
+        console.log(result);
+        result.user.sendEmailVerification();
         firebase.auth().signOut();
       })
-      // ...
-    }).catch(function(error) {
-      console.log(error);
-      // ...
-    });
+      .catch(error => {
+        localStorage.removeItem('userUID');
+        this.type = 'error';
+        this.msg = 'Wrong User Credentials';
+      });
   }
 }

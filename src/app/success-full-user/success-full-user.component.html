@@ -1,1 +1,4 @@
-<h1>Success User</h1>
+<div *ngIf="userDatafromDB != null">
+  <h1>Welcome : {{ userDatafromDB.name }}</h1>
+</div>
+<!-- <h2 *ngIf="userDatafromDB != null">{{ userDatafromDB.email }}</h2> -->

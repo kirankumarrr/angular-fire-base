@@ -11,12 +11,12 @@ export class FbLoginService {
   constructor() {}
 
   setfbLoginStatus(a) {
-    console.log('setfbLoginStatus called');
+    // console.log('setfbLoginStatus called');
     this.fblogin = a;
     this.fbLoginChange.next(this.fblogin);
   }
   getfbLoginStatus(): any {
-    console.log('getfbLoginStatus called');
+    // console.log('getfbLoginStatus called');
     return this.fblogin;
   }
 }
